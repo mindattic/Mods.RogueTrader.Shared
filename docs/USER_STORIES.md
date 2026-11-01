@@ -26,4 +26,4 @@ _Nothing recorded yet._
 | RTS-T3 | 2026-10-26 | fix | closed | Release zips drop empty folders an Owlcat mod needs (Bundles), and mods built from a worktree can't find RogueTrader.Shared | bf259fb |
 | RTS-T4 | 2026-10-26 | fix | closed | Guard Owlcat-format mods against the two startup traps (missing Bundles folder, missing bundle sections in OwlcatModificationSettings.json): README note plus a build check | 0bdd788 |
 | RTS-T5 | 2026-10-26 | fix | closed | Guard against a third Owlcat-mod trap: component patches are read strictly, so a numeric enum like "m_Flags": 0 stops the game on save load | a2be2d7 |
-| RTS-T6 | 2026-11-01 | chore | open | Rename repo to Mods.RogueTrader.Shared for mod organization (GitHub + folder + refs) | — |
+| RTS-T6 | 2026-11-01 | chore | closed | Rename repo to Mods.RogueTrader.Shared for mod organization (GitHub + folder + refs) | ebe636c806791171800170c0a713beb08f16a358 |
