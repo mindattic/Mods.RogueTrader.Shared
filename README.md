@@ -8,7 +8,7 @@ It's shared **source**, not a DLL: each mod compiles these files into its own as
 types in the `RogueTrader.Shared` namespace. Several mods run in one game process, and a shared DLL
 would be loaded once, so mods built against different versions of it would break each other.
 
-Check it out next to the mods (`D:\Projects\MindAttic\RogueTrader.Shared`); they import it by
+Check it out next to the mods (`D:\Projects\MindAttic\Mods.RogueTrader.Shared`); they import it by
 relative path, or set `-p:RogueTraderShared=<path>`.
 
 ## What's in it
@@ -35,7 +35,7 @@ Tool helpers (`src/Tools`):
 
 ```xml
 <PropertyGroup>
-  <RogueTraderShared Condition="'$(RogueTraderShared)' == ''">$(MSBuildThisFileDirectory)..\..\..\RogueTrader.Shared</RogueTraderShared>
+  <RogueTraderShared Condition="'$(RogueTraderShared)' == ''">$(MSBuildThisFileDirectory)..\..\..\Mods.RogueTrader.Shared</RogueTraderShared>
 </PropertyGroup>
 <Import Project="$(RogueTraderShared)\RogueTrader.Mod.props" />
 <PropertyGroup>

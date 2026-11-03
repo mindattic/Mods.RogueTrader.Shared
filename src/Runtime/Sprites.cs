@@ -19,7 +19,10 @@ namespace RogueTrader.Shared
                 return null;
             var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false) { name = Path.GetFileNameWithoutExtension(path) };
             if (!(bool)LoadImage.Invoke(null, new object[] { texture, File.ReadAllBytes(path) }))
+            {
+                UnityEngine.Object.Destroy(texture);
                 return null;
+            }
             return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         }
     }

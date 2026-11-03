@@ -25,7 +25,10 @@ namespace RogueTrader.Shared
             const string marker = "/Blueprints/";
             while (tar.GetNextEntry() is { } e)
             {
+                // Only the game's own <root>/Blueprints/ folder: the template also ships example mods with their
+                // own Blueprints folders (<root>/Assets/Modifications/<Mod>/Blueprints/), which aren't game blueprints.
                 var at = e.Name.IndexOf(marker, StringComparison.Ordinal);
+                if (at != e.Name.IndexOf('/')) at = -1;
                 if (e.EntryType is not (TarEntryType.RegularFile or TarEntryType.V7RegularFile) || at < 0 || !e.Name.EndsWith(".jbp") || e.DataStream is null)
                     continue;
                 using var r = new StreamReader(e.DataStream, Encoding.UTF8);
