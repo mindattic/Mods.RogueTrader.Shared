@@ -1,18 +1,39 @@
 <Project>
   <!-- For mods in Owlcat's own format (loaded from the game's Modifications folder; set OwlcatModification=true).
-       Fails the build on the two mistakes that stop the game: both pass silently until the game is run.
+       Guarantees the Bundles folder every such mod needs (see EnsureOwlcatBundles) and fails the build on the
+       other mistakes that stop the game, which otherwise pass silently until the game is run.
        1. No Bundles folder: OwlcatModification.LoadBundles lists it without checking it exists, throws, and every
           blueprint in the mod is skipped.
        2. OwlcatModificationSettings.json without BundlesLayout.m_Bundles: Unity's JsonUtility leaves the missing
           section null, and the first scene load hangs on the loading screen (NullReferenceException in
           OwlcatModification.TryLoadBundleAsync). -->
+
+  <!-- A Bundles folder left truly empty disappears again under a file-based deploy (Vortex links individual
+       files, so a folder with nothing in it never gets created on disk) even though the build and the release
+       zip both have it, which is exactly how RTO-T104 happened after RTO-T22 had already "fixed" this once. Run
+       for every Owlcat-format mod so none of them has to remember this (and so a future mod that ships real
+       bundle files in Bundles/ is left alone, since this only acts when the folder is otherwise empty). -->
+  <Target Name="EnsureOwlcatBundles" AfterTargets="$(PackageAfter)" BeforeTargets="CheckOwlcatMod;PackageMod" Condition="'$(OwlcatModification)' == 'true'">
+    <MakeDir Directories="$(ModInstallDir)\Bundles" />
+    <ItemGroup>
+      <OwlcatExistingBundleFile Include="$(ModInstallDir)\Bundles\**\*" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(ModInstallDir)\Bundles\.keep" Overwrite="true"
+                       Condition="'@(OwlcatExistingBundleFile)' == ''"
+                       Lines="Keeps this folder non-empty so file-based mod managers (e.g. Vortex) deploy it: the game's loader throws before loading any blueprint when Bundles/ doesn't exist (RTO-T104, RTS-T9)." />
+  </Target>
+
   <Target Name="CheckOwlcatMod" AfterTargets="$(PackageAfter)" BeforeTargets="PackageMod" Condition="'$(OwlcatModification)' == 'true'">
     <PropertyGroup>
       <OwlcatSettingsFile>$(ModInstallDir)\OwlcatModificationSettings.json</OwlcatSettingsFile>
       <OwlcatSettingsText Condition="Exists('$(OwlcatSettingsFile)')">$([System.IO.File]::ReadAllText('$(OwlcatSettingsFile)'))</OwlcatSettingsText>
     </PropertyGroup>
-    <Error Condition="!Exists('$(ModInstallDir)\Bundles')"
-           Text="$(ModInstallDir) has no Bundles folder. The game's loader throws without it and skips every blueprint in the mod: create it in the install target (and ship it with PackageDirectory Include=&quot;Bundles&quot;)." />
+    <!-- Safety net: EnsureOwlcatBundles above should already guarantee this, so this should never fire. -->
+    <ItemGroup>
+      <OwlcatBundleFile Include="$(ModInstallDir)\Bundles\**\*" />
+    </ItemGroup>
+    <Error Condition="'@(OwlcatBundleFile)' == ''"
+           Text="$(ModInstallDir)\Bundles is missing or empty. The game's loader throws without it and skips every blueprint in the mod, and an empty folder gets dropped by file-based mod managers like Vortex besides: EnsureOwlcatBundles should have created it with a placeholder file, so something upstream removed it." />
     <Error Condition="!Exists('$(OwlcatSettingsFile)')"
            Text="$(ModInstallDir) has no OwlcatModificationSettings.json." />
     <Error Condition="Exists('$(OwlcatSettingsFile)') and (!$(OwlcatSettingsText.Contains('&quot;m_Bundles&quot;')) or !$(OwlcatSettingsText.Contains('&quot;m_List&quot;')))"
