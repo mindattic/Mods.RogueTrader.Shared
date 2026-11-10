@@ -30,4 +30,5 @@ _Nothing recorded yet._
 | RTS-T7 | 2026-11-02 | docs | open | Adopt MindAttic.Agency docs-site pipeline, publish README to GitHub Pages (HOUSE-LAW-14) | — |
 | RTS-T8 | 2026-11-02 | fix | closed | Bughunt sweep, two passes: find and fix real bugs across tracked source (user request 2026-11-02) | — |
 | RTS-T9 | 2026-11-04 | fix | closed | Owlcat-format mods: guarantee a non-empty Bundles folder centrally so Vortex can't drop it (regression class behind RTO-T104) | 227f58d |
-| RTS-T10 | 2026-11-10 | chore | open | Crash recovery: commit the command-catalog sync (.agent/commands/*.md) and docs/USER_STORIES.md regen left uncommitted by the session crash | — |
+| RTS-T10 | 2026-11-10 | chore | closed | Crash recovery: commit the command-catalog sync (.agent/commands/*.md) and docs/USER_STORIES.md regen left uncommitted by the session crash | — |
+| RTS-T11 | 2026-11-10 | chore | open | Crash recovery / fleet sync: commit the regenerated docs/USER_STORIES.md left uncommitted after other tickets closed elsewhere | — |
